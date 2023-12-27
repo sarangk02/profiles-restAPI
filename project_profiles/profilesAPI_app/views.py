@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication 
 
 from rest_framework import status
-from . import serializers
+from . import serializers, models, permissions
 
 # apiview 
 class helloapi(APIView):
@@ -50,3 +51,9 @@ class helloviewset(viewsets.ViewSet):
             return Response({'message':msg})
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+class ProfileViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.userprofile
+    queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
